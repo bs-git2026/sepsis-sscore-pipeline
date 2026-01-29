@@ -1,0 +1,56 @@
+library(stringr)
+dens= read.csv("dens01.csv",header=TRUE)
+disease= read.csv("list_met_gene_final_clus.csv",header=TRUE)
+ndisease=read.csv("non_disease_gene.csv",header=TRUE)
+pvalue=read.csv("pvalue01-1.csv",header=FALSE)
+out=0
+pval_d=replicate(dim(dens)[1],0)
+counter=0
+counter1=0
+for (j in 1:dim(disease)[1]) {
+ for (i in 1:dim(dens)[1]){
+	if (grepl(disease[j,1],dens[i,5])){
+	counter=counter+1
+	counter1=counter1+1
+	print("TRUE")
+	pval_d[counter]=pvalue[i,2]
+	}
+	else
+	print("FALSE")
+}
+	out[counter1]=paste(disease[j,1],min(pval_d[pval_d > 0]))
+	pval_d=replicate(dim(dens)[1],0)
+	counter=0
+}
+
+write.csv(out[!is.na(out)], "test.csv")
+
+out=0
+pval_d=replicate(dim(dens)[1],0)
+counter=0
+counter1=0
+for (j in 1:dim(ndisease)[1]) {
+ for (i in 1:dim(dens)[1]){
+	if (grepl(ndisease[j,1],dens[i,5])){
+	counter=counter+1
+	counter1=counter1+1
+	print("TRUE")
+	pval_d[counter]=pvalue[i,2]
+	}
+	else
+	print("FALSE")
+}
+	out[counter1]=paste(ndisease[j,1],min(pval_d[pval_d > 0]))
+	pval_d=replicate(dim(dens)[1],0)
+	counter=0
+}
+
+write.csv(out[!is.na(out)], "test1.csv")
+
+plot(FPR, TPR, type = "b", 
+     xlim = c(0,1), ylim = c(0,1), 
+     main = 'ROC Curve',
+     xlab = "False Positive Rate (1 - Specificity)",
+     ylab = "True Positive Rate (Sensitivity)",
+     col = "blue")
+abline(a = 0, b = 1, lty=2, col = "grey") 

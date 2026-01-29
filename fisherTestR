@@ -1,0 +1,46 @@
+for (i in 1:dim(dens)[1]) {
+dat <- data.frame(
+  "Disease_yes" = c(a[i], c[i]),
+  "Disease_no" = c(b[i], d[i]),
+  row.names = c("InCluster", "OutCluster"),
+  stringsAsFactors = FALSE
+)
+colnames(dat) <- c("Non-Diseas", "Disease")
+mosaicplot(dat,
+  main = "Mosaic plot",
+  color = TRUE
+)
+chisq.test(dat)$expected
+test <- fisher.test(dat)
+#write.csv(test$p.value,"pvalue01.csv",append = TRUE )
+write.table(test$p.value, "pvalue01-1.csv", sep = ",", col.names = F, append = T)
+
+}
+
+met=read.csv("list_met_gene_final_clus.csv", header=T)
+net=read.csv("allnetclus.csv", header=T)
+e1=match(met$Gene, net$Gene, nomatch=0)
+write.table(net[-e,1], "non_disease_gene.csv", sep = ",", col.names = F, append = F)
+
+y <- data.frame(matrix(ncol = 4, nrow = 218))
+x <- c("TP", "FP", "TN", "FN")
+colnames(y) <- x
+y$TP=a
+y$FP=c
+y$TN=b
+y$FN=d
+df=y
+## calculate False Positive ratio
+df$FPR <- df$FP/(df$FP + df$TN)
+## calculte True Positive Ratio
+df$TPR <- df$TP/(df$TP + df$FN)
+
+
+## plot the ROC with base plot
+plot(df$FPR, df$TPR, type = "b", 
+     xlim = c(0,1), ylim = c(0,1), 
+     main = 'ROC Curve',
+     xlab = "False Positive Rate (1 - Specificity)",
+     ylab = "True Positive Rate (Sensitivity)",
+     col = "blue")
+abline(a = 0, b = 1, lty=2, col = "grey") ### pure chance line

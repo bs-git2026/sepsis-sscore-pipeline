@@ -1,0 +1,36 @@
+library(stringr)
+dens= read.csv("dens01.csv",header=TRUE)
+list= read.csv("list_met_gene_final_clus.csv",header=TRUE)
+backlist=list
+a=replicate(dim(dens)[1],0)
+b=replicate(dim(dens)[1],0)
+c=replicate(dim(dens)[1],0)
+d=replicate(dim(dens)[1],0)
+genelist=replicate(dim(dens)[1],0)
+genelist4=replicate(dim(dens)[1],0)
+templist=replicate(dim(list)[1],0)
+counter=0
+counter1=0
+for (i in 1:dim(dens)[1]) {
+ for (j in 1:dim(list)[1]){
+	if (grepl(list[j,1],dens[i,5])){
+	counter=counter+1
+	print("TRUE")
+	genelist[counter]=j
+	print(j)
+	}
+	else
+	print("FALSE")
+	}
+	a[i]=counter
+	num=str_count(dens[i,5], ",")
+	b[i]= num+1-a[i]
+	counter=0
+	c[i]= dim(list)[1]-a[i]
+}
+
+net= read.csv("allnetclus.csv",header=TRUE)
+e=match(list$Gene, net$Gene, nomatch=0)
+for (i in 1:dim(dens)[1]) {
+d[i]=length(net[-e,1])-b[i]
+}
