@@ -21,6 +21,11 @@ Packages: stringr (install if needed: `install.packages("stringr")`)
    - allnetclus.csv (full network genes)
 2. Run in order:
    ```r
-   source("scripts/01_prepare_fisher_tables.R")
-   source("scripts/02_run_fisher_and_roc.R")
-   source("scripts/03_compute_sscore.R")
+# 1. Prepare the contingency tables (a, b, c, d vectors)
+source("fisher variables1.R")
+
+# 2. Run Fisher's exact tests 
+source("fisherTestR.R")
+
+# 3. Calculate SScore (minimum p-value per gene)
+source("SScoreCalculation.R")
